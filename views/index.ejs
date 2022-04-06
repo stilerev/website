@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+<body>
+
+    <div id="login-container">
+        <div>
+            <label for="login">Login</label>
+            <input type="text" id="user" name="user">
+            <input type="password" id="password" name="password">
+        </div>
+        <div>
+            <button onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <% imgs.forEach(image=> { %>
+        <image src="image/<%= image %>"></image>
+        <% }) %>
+
+            <div id="uploader">
+                <div>
+                    <label for="image">Upload video</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                    <input type="text" class="image-upload" name="name">
+                </div>
+                <div>
+                    <button onclick="onClickIt()">Submit</button>
+                </div>
+                <div id="upload-message"></div>
+            </div>
+
+            <script>
+                function login(){
+                    const username = document.getElementById("user").value;
+                    const password = document.getElementById("password").value;
+
+                    fetch("/login", {
+                        method: "POST",
+                        headers:{
+                            "Accept": "application/json",
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            user: username,
+                            password:password
+                        })
+                    }).then(res=>res.json()).then(data=>{
+                        console.log(data);
+                    })
+                }
+            </script>
+
+            <script>
+                function onClickIt() {
+                    const image = document.getElementById("image").files[0];
+                    const formData = new FormData();
+                    formData.append("image", image);
+
+                    fetch("/upload/image", {
+                        method: "POST",
+                        body: formData
+                    }).then(res => res.json()).then(data => {
+                        document.getElementById("upload-message").innerHTML = data.message;
+                    });
+                }
+            </script>
+</body>
+
+</html>
