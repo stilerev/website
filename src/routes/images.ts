@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { getFileStream, getFiles } from "../services/awsfiles";
 import { sendResponse } from "../services/httpres";
-import { uploadFile } from "../services/s3";
+import { uploadFile, deleteFile } from "../services/s3";
 import auth from "../middleware/auth";
 
 import path = require("path");
@@ -21,13 +21,13 @@ router.get("/image/:name", (req, res) => {
     readStream.pipe(res);
 });
 
-router.post("/upload/image", auth, upload.single("image"), (req, res) => {
-    let nameOfUpload = "";
+router.post("/image/:name", auth, upload.single("image"), (req, res) => {
+    let nameOfUpload = req.params.name.toLowerCase();
 
     if (!req.file) {
 
         sendResponse({
-            message: "No file uploaded",
+            message: "No file selected",
             status: 400
         }, res);
         return;
@@ -47,7 +47,7 @@ router.post("/upload/image", auth, upload.single("image"), (req, res) => {
 });
 
 router.delete("/image/:name", auth, (req, res) => {
-
+    deleteFile(req, res, req.params.name);
 });
 
 let arr = [];

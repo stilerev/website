@@ -27,11 +27,13 @@
         function onClickIt() {
             const image = document.getElementById("image").files[0];
             const formData = new FormData();
+            const params = new URLSearchParams();
+            params.set("file", image.name);
             formData.append("image", image);
-            fetch("/upload/image", {
+            fetch("/upload/image?" + params.toString(), {
                 method: "POST",
-                body: formData
-            }).then(res=>{
+                body: formData,
+            }).then(res => {
                 console.log(res)
             });
         }
