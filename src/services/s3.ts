@@ -2,6 +2,8 @@ import aws = require("aws-sdk");
 import fs = require("fs");
 import { sendResponse } from "./httpres";
 import { Request, Response } from "express";
+import { config } from "dotenv";
+import conf from "../config";
 
 const BUCKET_NAME = "imagestorage"
 
@@ -27,14 +29,14 @@ export function uploadFile(req: Request, res: Response, name: string) {
             fs.unlinkSync(req.file.path);
 
             sendResponse({
-                message: `Uploaded file ${name.toLowerCase()}`,
+                message: conf.messages.files.UPLOADED.replace("%file%", name.toLowerCase()),
                 status: 201
             }, res);
         }
     });
 }
 
-export function deleteFile(req: Request, res: Response, name: string) {
+export function deleteFile(res: Response, name: string) {
     s3.deleteObject({
         Bucket: BUCKET_NAME,
         Key: name.toLowerCase()
@@ -48,7 +50,7 @@ export function deleteFile(req: Request, res: Response, name: string) {
 
         if (data) {
             sendResponse({
-                message: `Deleted file ${name.toLowerCase()}`,
+                message: conf.messages.files.DELETED.replace("%file%", name.toLowerCase()),
                 status: 200
             }, res);
         }

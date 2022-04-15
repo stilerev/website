@@ -14,8 +14,8 @@ export interface HttpResponseMessage {
 
 /**
  * Send a response to the client using JSON.
- * @param response 
- * @param res 
+ * @param response
+ * @param res
  */
 export function sendResponse(response: HttpResponseMessage, res: express.Response) {
     res.status(response.status);

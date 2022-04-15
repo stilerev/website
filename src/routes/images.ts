@@ -6,6 +6,7 @@ import auth from "../middleware/auth";
 
 import path = require("path");
 import multer = require("multer");
+import config from "../config";
 
 const upload = multer({
     dest: "uploads/"
@@ -27,15 +28,15 @@ router.post("/image/:name", auth, upload.single("image"), (req, res) => {
     if (!req.file) {
 
         sendResponse({
-            message: "No file selected",
+            message: config.messages.files.NO_FILE,
             status: 400
         }, res);
         return;
     }
 
     //rename file for s3 upload.
-    if (req.body.name) {
-        nameOfUpload = req.body.name;
+    if (req.params.name) {
+        nameOfUpload = req.params.name;
         if (!path.extname(nameOfUpload)) {
             nameOfUpload += path.extname(req.file.originalname);
         }
@@ -47,7 +48,7 @@ router.post("/image/:name", auth, upload.single("image"), (req, res) => {
 });
 
 router.delete("/image/:name", auth, (req, res) => {
-    deleteFile(req, res, req.params.name);
+    deleteFile(res, req.params.name);
 });
 
 let arr = [];

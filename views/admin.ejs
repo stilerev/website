@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include("partials/bootstrap/css.ejs") %>
+
+        <title>Admin</title>
+    </head>
+
+    <body>
+        <%- include("partials/nav.ejs") %>
+
+        <form class="no-refresh" id="image-upload-form" novalidate>
+            <div class="col-md-3">
+                <label for="image-name" class="form-label">Name</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="image-name"
+                    placeholder="Image name"
+                    required
+                />
+
+                <div class="invalid-feedback">
+                    Please enter a name for the image
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <label for="image" class="form-label">Image</label>
+                <input
+                    type="file"
+                    class="form-control"
+                    id="image"
+                    accept="image/*"
+                    required
+                />
+
+                <div class="invalid-feedback">
+                    Please select an image to be uploaded
+                </div>
+            </div>
+
+            <div class="col-12">
+                <button
+                    class="btn btn-primary"
+                    type="submit"
+                    onclick="attemptUploadFile()"
+                >
+                    Upload
+                </button>
+            </div>
+
+            <span class="d-inline-block" id="response"></span>
+        </form>
+
+        <script>
+            function attemptUploadFile() {
+                const image = document.getElementById("image").files[0];
+
+                if (!image) {
+                    document
+                        .getElementById("image-upload-form")
+                        .classList.add("was-validated");
+                    return;
+                }
+
+                const formData = new FormData();
+
+                const name = document.getElementById("image-name").value;
+                let correctedName = "";
+
+                if (!name) {
+                    correctedName = image.name;
+                } else {
+                    const split = image.name.split(".");
+                    const ext = split[split.length - 1];
+                    correctedName = name + "." + ext;
+                }
+
+                image.name = correctedName.toLowerCase();
+                formData.append("image", image);
+
+                fetch("/image/" + correctedName, {
+                    method: "POST",
+                    body: formData,
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (data.message) {
+                            const resp = document.getElementById("response");
+                            resp.textContent = data.message;
+                        }
+                    });
+            }
+        </script>
+
+        <%- include("partials/no-refresh.ejs") %> <%-
+        include("partials/bootstrap/bundle.ejs") %>
+    </body>
+</html>
