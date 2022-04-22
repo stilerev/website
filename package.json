@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "development": "nodemon src/server.ts",
-    "start": "node dist/server.js"
+    "start": "node --trace-warnings dist/server.js"
   },
   "author": "",
   "license": "ISC",
