@@ -85,5 +85,9 @@ app.post("/logout", function (req, res, next) {
     }
 });
 app.get("/admin", auth_1.default, function (req, res) {
-    res.render("admin");
+    images_2.storeAllImages().then(function (imgs) {
+        res.render("admin", {
+            imgs: imgs
+        });
+    });
 });

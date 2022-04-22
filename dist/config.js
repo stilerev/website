@@ -13,7 +13,8 @@ var config = {
         files: {
             NO_FILE: "No file selected",
             UPLOADED: "Uploaded file %file%",
-            DELETED: "Deleted file %file%"
+            DELETED: "Deleted file %file%",
+            RENAMED: "Renamed file %old% to %new%"
         }
     },
     credentials: {

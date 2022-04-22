@@ -44,6 +44,7 @@ var express_1 = require("express");
 var awsfiles_1 = require("../services/awsfiles");
 var httpres_1 = require("../services/httpres");
 var s3_1 = require("../services/s3");
+var fs_1 = __importDefault(require("fs"));
 var auth_1 = __importDefault(require("../middleware/auth"));
 var path = require("path");
 var multer = require("multer");
@@ -58,6 +59,12 @@ router.get("/image/:name", function (req, res) {
     res.removeHeader("Pragma");
     res.removeHeader("Expires");
     readStream.pipe(res);
+});
+router.patch("/image/:name", auth_1.default, function (req, res) {
+    s3_1.editFile(res, req.params.name, {
+        name: req.body.newname,
+        visible: req.body.visible
+    });
 });
 router.post("/image/:name", auth_1.default, upload.single("image"), function (req, res) {
     var nameOfUpload = req.params.name.toLowerCase();
@@ -78,22 +85,54 @@ router.post("/image/:name", auth_1.default, upload.single("image"), function (re
     else {
         nameOfUpload = req.file.originalname;
     }
-    s3_1.uploadFile(req, res, nameOfUpload);
+    s3_1.uploadFile(req, res, nameOfUpload).promise().then(function (val) {
+        if (val) {
+            fs_1.default.unlinkSync(req.file.path);
+            httpres_1.sendResponse({
+                message: config_1.default.messages.files.UPLOADED.replace("%file%", val.Key),
+                status: 201
+            }, res);
+        }
+    });
 });
 router.delete("/image/:name", auth_1.default, function (req, res) {
-    s3_1.deleteFile(res, req.params.name);
+    s3_1.deleteFile(res, req.params.name).promise().then(function () {
+        httpres_1.sendResponse({
+            message: config_1.default.messages.files.DELETED.replace("%file%", req.params.name.toLowerCase()),
+            status: 200
+        }, res);
+    });
 });
 var arr = [];
 function storeAllImages() {
     return __awaiter(this, void 0, void 0, function () {
+        var _this = this;
         return __generator(this, function (_a) {
             arr = [];
-            return [2 /*return*/, awsfiles_1.getFiles().then(function (res) {
-                    for (var i = 0; i < res.KeyCount; i++) {
-                        arr.push(res.Contents[i].Key);
-                    }
-                    return arr;
-                })];
+            return [2 /*return*/, awsfiles_1.getFiles().then(function (res) { return __awaiter(_this, void 0, void 0, function () {
+                    var i, val;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                i = 0;
+                                _a.label = 1;
+                            case 1:
+                                if (!(i < res.KeyCount)) return [3 /*break*/, 4];
+                                return [4 /*yield*/, awsfiles_1.getMetadata(res.Contents[i].Key)];
+                            case 2:
+                                val = _a.sent();
+                                arr.push({
+                                    name: res.Contents[i].Key,
+                                    visible: (val.Metadata.visible === "true")
+                                });
+                                _a.label = 3;
+                            case 3:
+                                i++;
+                                return [3 /*break*/, 1];
+                            case 4: return [2 /*return*/, arr];
+                        }
+                    });
+                }); })];
         });
     });
 }

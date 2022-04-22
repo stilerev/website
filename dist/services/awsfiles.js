@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFiles = exports.getFileStream = exports.BUCKET_NAME = void 0;
+exports.getMetadata = exports.getFiles = exports.getFileStream = exports.BUCKET_NAME = void 0;
 var aws = require("aws-sdk");
 exports.BUCKET_NAME = "imagestorage";
 var s3 = new aws.S3();
@@ -60,3 +60,10 @@ function getFiles() {
     });
 }
 exports.getFiles = getFiles;
+function getMetadata(key) {
+    return s3.headObject({
+        Bucket: exports.BUCKET_NAME,
+        Key: key
+    }).promise();
+}
+exports.getMetadata = getMetadata;
