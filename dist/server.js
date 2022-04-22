@@ -58,6 +58,7 @@ app.get("/", function (req, res) {
             imgs: imgs
         });
     });
+    res.sendStatus(200);
 });
 app.post("/login", function (req, res, next) {
     if (req.body.user === process.env.USR && req.body.password === process.env.PASSWORD) {

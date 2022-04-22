@@ -44,6 +44,7 @@ app.get("/", (req, res) => {
             imgs: imgs
         });
     });
+    res.sendStatus(200);
 });
 
 app.post("/login", (req, res, next) => {
