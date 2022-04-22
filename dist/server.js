@@ -66,6 +66,7 @@ app.get("/healthCheck", function (req, res) {
 app.get("/", function (req, res) {
     console.log("ATTEMPTING GETTING HOME VIEW");
     images_2.storeAllImages().then(function (imgs) {
+        console.log(imgs);
         res.render("index", {
             imgs: imgs
         });
