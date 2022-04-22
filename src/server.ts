@@ -47,6 +47,8 @@ app.get("/", (req, res) => {
         res.render("index", {
             imgs: imgs
         });
+    }).catch(err=>{
+        console.error(err);
     });
 });
 
