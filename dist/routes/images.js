@@ -132,7 +132,9 @@ function storeAllImages() {
                             case 4: return [2 /*return*/, arr];
                         }
                     });
-                }); })];
+                }); }).catch(function (err) {
+                    console.log("ERRORR: " + err);
+                })];
         });
     });
 }
