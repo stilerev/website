@@ -18,11 +18,21 @@ app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
 
+console.log("BEFFORE VIEW ENGINE");
 app.set("view engine", "ejs");
+console.log("AFTER VIEW ENGINE");
 
+console.log("BEFORE JSON")
 app.use(express.json());
+console.log("AFTER JSON")
+
+console.log("BEFORE PARSER")
 app.use(cookieParser());
+console.log("AFTER PARSER")
+
+console.log("BEFORE IMAGES")
 app.use(images);
+console.log("AFTER IMAGES")
 
 app.use((req, res, next) => {
     if (!req.cookies.user) {
