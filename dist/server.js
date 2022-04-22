@@ -52,6 +52,9 @@ app.use(function (req, res, next) {
     }
     next();
 });
+app.get("/healthCheck", function (req, res) {
+    res.sendStatus(200);
+});
 app.get("/", function (req, res) {
     images_2.storeAllImages().then(function (imgs) {
         res.render("index", {

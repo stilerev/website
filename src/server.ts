@@ -38,6 +38,10 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get("/healthCheck",(req,res)=>{
+    res.sendStatus(200);
+})
+
 app.get("/", (req, res) => {
     storeAllImages().then(imgs => {
         res.render("index", {
