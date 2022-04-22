@@ -1,8 +1,87 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Home</a>
-       <% if (authed) { %>
-            <a class="nav-item nav-justified" href="/admin">Admin</a>
-       <% } %>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbar"
+            aria-controls="navbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+
+                <% if (admin) { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin">Admin</a>
+                </li>
+                <% } %>
+            </ul>
+            <% if (admin) { %>
+            <form class="d-flex" action="/logout" method="post">
+                <button type="submit" class="btn btn-outline-success">
+                    Log out
+                </button>
+            </form>
+            <% } else { %>
+            <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#login-modal"
+            >
+                Login
+            </button>
+            <% } %>
+        </div>
     </div>
 </nav>
+
+<div class="modal fade" id="login-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Login</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="col-md-5">
+                        <input
+                            type="text"
+                            class="form-control mb-2"
+                            placeholder="Username"
+                            id="username"
+                            required
+                            autofocus
+                        />
+                    </div>
+                    <div class="col-md-5">
+                        <input
+                            type="password"
+                            class="form-control mb-2"
+                            id="password"
+                            placeholder="Password"
+                            required
+                        />
+                    </div>
+
+                    <button class="btn btn-outline-primary" id="btn-login">Login</button>
+                </form>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>

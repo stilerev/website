@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { getFileStream, getFiles } from "../services/awsfiles";
+import { getFileStream, getFiles, getMetadata } from "../services/awsfiles";
 import { sendResponse } from "../services/httpres";
-import { uploadFile, deleteFile } from "../services/s3";
+import { uploadFile, deleteFile, editFile } from "../services/s3";
+import fs from "fs";
 import auth from "../middleware/auth";
 
 import path = require("path");
@@ -22,11 +23,17 @@ router.get("/image/:name", (req, res) => {
     readStream.pipe(res);
 });
 
+router.patch("/image/:name", auth, (req, res) => {
+    editFile(res, req.params.name, {
+        name: req.body.newname,
+        visible: req.body.visible
+    });
+})
+
 router.post("/image/:name", auth, upload.single("image"), (req, res) => {
     let nameOfUpload = req.params.name.toLowerCase();
 
     if (!req.file) {
-
         sendResponse({
             message: config.messages.files.NO_FILE,
             status: 400
@@ -44,20 +51,44 @@ router.post("/image/:name", auth, upload.single("image"), (req, res) => {
         nameOfUpload = req.file.originalname;
     }
 
-    uploadFile(req, res, nameOfUpload);
+    uploadFile(req, res, nameOfUpload).promise().then(val => {
+        if (val) {
+            fs.unlinkSync(req.file.path);
+
+            sendResponse({
+                message: config.messages.files.UPLOADED.replace("%file%", val.Key),
+                status: 201
+            }, res);
+        }
+    })
 });
 
 router.delete("/image/:name", auth, (req, res) => {
-    deleteFile(res, req.params.name);
+    deleteFile(res, req.params.name).promise().then(() => {
+
+        sendResponse({
+            message: config.messages.files.DELETED.replace("%file%", req.params.name.toLowerCase()),
+            status: 200
+        }, res);
+    });
 });
 
-let arr = [];
+interface StoredImage {
+    name: string;
+    visible: boolean;
+}
+
+let arr: StoredImage[] = [];
 
 export async function storeAllImages() {
     arr = [];
-    return getFiles().then(res => {
+    return getFiles().then(async res => {
         for (let i = 0; i < res.KeyCount; i++) {
-            arr.push(res.Contents[i].Key);
+            let val = await getMetadata(res.Contents[i].Key);
+            arr.push({
+                name: res.Contents[i].Key,
+                visible: (val.Metadata.visible === "true")
+            });
         }
         return arr;
     });

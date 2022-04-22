@@ -3,15 +3,13 @@ import "dotenv/config";
 import express = require("express");
 import * as crypto from "crypto";
 import cookieParser = require("cookie-parser");
-import path = require("path");
-import fs = require("fs");
-import multer = require("multer");
 
 import { sendResponse } from "./services/httpres";
 import images from "./routes/images";
 import { storeAllImages } from "./routes/images";
 import auth from "./middleware/auth";
 import config from "./config";
+
 const app = express();
 
 const port = process.env.PORT || 3000;
@@ -27,14 +25,14 @@ app.use(cookieParser());
 app.use(images);
 
 app.use((req, res, next) => {
-    if (!req.cookies.usr) {
-        res.locals.authed = false;
+    if (!req.cookies.user) {
+        res.locals.admin = false;
     }
 
-    if (config.credentials.PASSWORD_HASH === req.cookies.usr) {
-        res.locals.authed = true;
+    if (config.credentials.PASSWORD_HASH === req.cookies.user) {
+        res.locals.admin = true;
     } else {
-        res.locals.authed = false;
+        res.locals.admin = false;
     }
 
     next();
@@ -54,7 +52,7 @@ app.post("/login", (req, res, next) => {
             message: config.messages.login.SUCCESS,
             status: 200,
             cookie: {
-                key: "usr",
+                key: config.user.COOKIE_NAME,
                 value: crypto.createHash("sha512").update(req.body.user + "").update(process.env.RND + "").digest("hex")
             },
             redirect: "admin"
@@ -67,6 +65,17 @@ app.post("/login", (req, res, next) => {
     }
 });
 
+app.post("/logout", (req, res, next) => {
+    if (res.locals.admin) {
+        res.clearCookie(config.user.COOKIE_NAME);
+        res.redirect("/")
+    }
+});
+
 app.get("/admin", auth, (req, res) => {
-    res.render("admin");
+    storeAllImages().then(imgs => {
+        res.render("admin", {
+            imgs: imgs
+        });
+    });
 });

@@ -1,56 +1,25 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <%- include("partials/bootstrap/css.ejs") %>
+    <head>
+        <%- include("partials/bootstrap/css.ejs") %>
 
-    <title>Page Title</title>
-  </head>
+        <title>Page Title</title>
+    </head>
 
-  <body>
-    <%- include("partials/nav.ejs") %>
-    <div id="login-container">
-      <div>
-        <label for="login">Login</label>
-        <input type="text" id="user" name="user" />
-        <input type="password" id="password" name="password" />
-      </div>
-      <div>
-        <button onclick="login()">Login</button>
-      </div>
-    </div>
+    <body>
+        <%- include("partials/nav.ejs") %>
 
-    <div class="container">
-        <% imgs.forEach(image=> { %>
-            <img src="image/<%= image %>" class="img-thumbnail w-50 float-start"></img>
-        <% }) %>
-    </div>
+        <div class="container-fluid">
+            <div class="row">
+                <% imgs.forEach(image=> { %> <% if (image.visible) { %>
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/<%= image.name %>" class="w-75 mb-4" />
+                </div>
+                <% } %> <% }) %>
+            </div>
+        </div>
 
-    <script>
-      function login() {
-        const username = document.getElementById("user").value;
-        const password = document.getElementById("password").value;
-
-        fetch("/login", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user: username,
-            password: password,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.redirect) {
-              window.location.href = data.redirect;
-            }
-          });
-      }
-    </script>
-
-    <%- include("partials/no-refresh.ejs") %>
-    <%- include("partials/bootstrap/bundle.ejs") %>
-  </body>
+        <%- include("partials/scripts/public.ejs") %> <%-
+        include("partials/bootstrap/bundle.ejs") %>
+    </body>
 </html>

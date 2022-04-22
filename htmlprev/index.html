@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+  crossorigin="anonymous"
+/>
+
+
+        <title>Page Title</title>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbar"
+            aria-controls="navbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin">Admin</a>
+                </li>
+                
+            </ul>
+            
+            <form class="d-flex" action="/logout" method="post">
+                <button type="submit" class="btn btn-outline-success">
+                    Log out
+                </button>
+            </form>
+            
+        </div>
+    </div>
+</nav>
+
+<div class="modal fade" id="login-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Login</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="col-md-5">
+                        <input
+                            type="text"
+                            class="form-control mb-2"
+                            placeholder="Username"
+                            id="username"
+                            required
+                            autofocus
+                        />
+                    </div>
+                    <div class="col-md-5">
+                        <input
+                            type="password"
+                            class="form-control mb-2"
+                            id="password"
+                            placeholder="Password"
+                            required
+                        />
+                    </div>
+
+                    <button class="btn btn-outline-primary" id="btn-login">Login</button>
+                </form>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+        <div class="container-fluid">
+            <div class="row">
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/LAND.BMP" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/ah.png" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/canvas.PNG" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/canvas.png" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/download.jpg" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/eah.bmp" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/eah.png" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/ewafgfr.bmp" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/file.png" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/hr.jpg" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/sample_640×426.png" class="w-75 mb-4" />
+                </div>
+                
+                <div class="col-lg-4 col-md-12 mb-4 mb-lg-0 mt-3">
+                    <img src="image/stratrs.png" class="w-75 mb-4" />
+                </div>
+                
+            </div>
+        </div>
+
+        <script>
+    (function () {
+        document.getElementById("btn-login").addEventListener("click", () => {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            fetch("/login", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    user: username,
+                    password: password,
+                }),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
+                });
+        });
+    })();
+</script>
+
+<script>
+    (function () {
+        document
+            .getElementById("login-modal")
+            .addEventListener("shown.bs.modal", () => {
+                document.getElementById("username").focus();
+            });
+    })();
+</script>
+
+<script>
+    //prevent refreshing on form submit
+    (function () {
+        const form = document.getElementsByClassName("no-refresh");
+        for (const el of form) {
+            el.addEventListener("submit", (event) => {
+                event.preventDefault();
+            });
+        }
+    })();
+</script>
+ <script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+  crossorigin="anonymous"
+></script>
+
+    </body>
+</html>

@@ -21,3 +21,10 @@ export async function getFiles() {
         Bucket: BUCKET_NAME
     }).promise();
 }
+
+export function getMetadata(key:string){
+    return s3.headObject({
+        Bucket:BUCKET_NAME,
+        Key:key
+    }).promise();
+}

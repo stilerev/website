@@ -42,7 +42,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.storeAllImages = void 0;
 var express_1 = require("express");
 var awsfiles_1 = require("../services/awsfiles");
+var httpres_1 = require("../services/httpres");
+var s3_1 = require("../services/s3");
 var auth_1 = __importDefault(require("../middleware/auth"));
+var path = require("path");
+var multer = require("multer");
+var config_1 = __importDefault(require("../config"));
+var upload = multer({
+    dest: "uploads/"
+});
 var router = express_1.Router();
 router.get("/image/:name", function (req, res) {
     var readStream = awsfiles_1.getFileStream(req.params.name);
@@ -51,7 +59,29 @@ router.get("/image/:name", function (req, res) {
     res.removeHeader("Expires");
     readStream.pipe(res);
 });
+router.post("/image/:name", auth_1.default, upload.single("image"), function (req, res) {
+    var nameOfUpload = req.params.name.toLowerCase();
+    if (!req.file) {
+        httpres_1.sendResponse({
+            message: config_1.default.messages.files.NO_FILE,
+            status: 400
+        }, res);
+        return;
+    }
+    //rename file for s3 upload.
+    if (req.params.name) {
+        nameOfUpload = req.params.name;
+        if (!path.extname(nameOfUpload)) {
+            nameOfUpload += path.extname(req.file.originalname);
+        }
+    }
+    else {
+        nameOfUpload = req.file.originalname;
+    }
+    s3_1.uploadFile(req, res, nameOfUpload);
+});
 router.delete("/image/:name", auth_1.default, function (req, res) {
+    s3_1.deleteFile(res, req.params.name);
 });
 var arr = [];
 function storeAllImages() {
