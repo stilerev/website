@@ -1,0 +1,48 @@
+<script>
+    (function () {
+        document.getElementById("btn-login").addEventListener("click", () => {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            fetch("/login", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    user: username,
+                    password: password,
+                }),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
+                });
+        });
+    })();
+</script>
+
+<script>
+    (function () {
+        document
+            .getElementById("login-modal")
+            .addEventListener("shown.bs.modal", () => {
+                document.getElementById("username").focus();
+            });
+    })();
+</script>
+
+<script>
+    //prevent refreshing on form submit
+    (function () {
+        const form = document.getElementsByClassName("no-refresh");
+        for (const el of form) {
+            el.addEventListener("submit", (event) => {
+                event.preventDefault();
+            });
+        }
+    })();
+</script>
