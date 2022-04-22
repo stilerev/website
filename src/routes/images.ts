@@ -91,6 +91,8 @@ export async function storeAllImages() {
             });
         }
         return arr;
+    }).catch(err=>{
+        console.log("ERRORR: " + err)
     });
 }
 

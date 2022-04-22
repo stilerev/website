@@ -48,7 +48,7 @@ app.get("/", (req, res) => {
             imgs: imgs
         });
     }).catch(err=>{
-        console.error(err);
+        console.log("ERRORRRRR: " + err);
     });
 });
 
