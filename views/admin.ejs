@@ -111,6 +111,7 @@
                     constructor(src, name = "") {
                         this.src = src;
                         this.name = name || src;
+                        console.log(this.src)
                         //this.name = this.name.replace("image/", "");
 
                         const img = imgss.find(i=>i.name.includes(this.name));
