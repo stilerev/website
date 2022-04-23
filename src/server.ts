@@ -41,7 +41,8 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
     storeAllImages().then(imgs => {
         res.render("index", {
-            imgs: imgs
+            imgs: imgs,
+            title: "home"
         });
     });
 });
@@ -75,7 +76,8 @@ app.post("/logout", (req, res, next) => {
 app.get("/admin", auth, (req, res) => {
     storeAllImages().then(imgs => {
         res.render("admin", {
-            imgs: imgs
+            imgs: imgs,
+            title: "admin"
         });
     });
 });

@@ -55,7 +55,8 @@ app.use(function (req, res, next) {
 app.get("/", function (req, res) {
     images_2.storeAllImages().then(function (imgs) {
         res.render("index", {
-            imgs: imgs
+            imgs: imgs,
+            title: "home"
         });
     });
 });
@@ -87,7 +88,8 @@ app.post("/logout", function (req, res, next) {
 app.get("/admin", auth_1.default, function (req, res) {
     images_2.storeAllImages().then(function (imgs) {
         res.render("admin", {
-            imgs: imgs
+            imgs: imgs,
+            title: "admin"
         });
     });
 });
