@@ -112,7 +112,7 @@
                         this.src = src;
                         this.name = name || src;
                         console.log(this.src)
-                        //this.name = this.name.replace("image/", "");
+                        this.name = this.name.replace("image/", "");
 
                         const img = imgss.find(i=>i.name.includes(this.name));
 
@@ -131,8 +131,7 @@
                 const els = document.getElementsByClassName("clickable-image");
                 for (const e of els) {
                     new UploadedImage(
-                        e.src
-                        //e.src.replace("http://localhost:3000/", "")
+                        e.src.replace(window.location.host, "")
                     );
                 }
             });
