@@ -83,7 +83,6 @@ let arr: StoredImage[] = [];
 export async function storeAllImages() {
     arr = [];
     return getFiles().then(async res => {
-        console.log("RES STORE IMAGE: " + res)
         for (let i = 0; i < res.KeyCount; i++) {
             let val = await getMetadata(res.Contents[i].Key);
             arr.push({
@@ -92,8 +91,6 @@ export async function storeAllImages() {
             });
         }
         return arr;
-    }).catch(err=>{
-        console.log("ERRORR: " + err)
     });
 }
 

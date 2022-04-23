@@ -36,18 +36,10 @@ var port = process.env.PORT || 3000;
 app.listen(port, function () {
     console.log("Server started on port " + port);
 });
-console.log("BEFFORE VIEW ENGINE");
 app.set("view engine", "ejs");
-console.log("AFTER VIEW ENGINE");
-console.log("BEFORE JSON");
 app.use(express.json());
-console.log("AFTER JSON");
-console.log("BEFORE PARSER");
 app.use(cookieParser());
-console.log("AFTER PARSER");
-console.log("BEFORE IMAGES");
 app.use(images_1.default);
-console.log("AFTER IMAGES");
 app.use(function (req, res, next) {
     if (!req.cookies.user) {
         res.locals.admin = false;
@@ -60,18 +52,11 @@ app.use(function (req, res, next) {
     }
     next();
 });
-app.get("/healthCheck", function (req, res) {
-    res.sendStatus(200);
-});
 app.get("/", function (req, res) {
-    console.log("ATTEMPTING GETTING HOME VIEW");
     images_2.storeAllImages().then(function (imgs) {
-        console.log(imgs);
         res.render("index", {
             imgs: imgs
         });
-    }).catch(function (err) {
-        console.log("ERRORRRRR: " + err);
     });
 });
 app.post("/login", function (req, res, next) {
